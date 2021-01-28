@@ -1,11 +1,19 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask.globals import request
 from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO
 from datetime import datetime
 
 app = Flask(__name__)
+
+#sqlite initalization
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+#socketio initialization
+app.config['SECRET_KEY'] = 'vajiralongko1232#'
+socketio = SocketIO(app)
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -21,7 +29,7 @@ def index():
     if request.method == 'POST':
         task_content = request.form['content']
         new_task = Todo(content=task_content)
-        
+
         try:
             db.session.add(new_task)
             db.session.commit()
@@ -57,5 +65,13 @@ def update(id):
     else:
         return render_template('update.html', task=task_to_update)
 
+def messageReceived(methods=['GET', 'POST']):
+    print('message was received!!!')
+
+@socketio.on('my event')
+def handle_my_custom_event(json, methods=['GET', 'POST']):
+    print('received my event: ' + str(json))
+    socketio.emit('my response', json, callback=messageReceived)
+
 if __name__  == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)
