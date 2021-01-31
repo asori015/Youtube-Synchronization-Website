@@ -2,8 +2,5 @@
 *.pyo
 env/
 .vscode/
-curricular/
-flaskr/
-global_stock/
-reason_package/
+css_example/
 __pycache__/
