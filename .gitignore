@@ -1,0 +1,8 @@
+*.pyc
+not-facebook-env/
+.vscode/
+curricular/
+flaskr/
+global_stock/
+reason_package/
+__pycache__/
