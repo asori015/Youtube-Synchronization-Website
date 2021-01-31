@@ -1,6 +1,6 @@
 *.pyc
 *.pyo
-not-facebook-env/
+env/
 .vscode/
 curricular/
 flaskr/
