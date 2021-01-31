@@ -1,4 +1,5 @@
 *.pyc
+*.pyo
 not-facebook-env/
 .vscode/
 curricular/
