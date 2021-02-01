@@ -24,3 +24,19 @@ socket.on( 'my response', function( msg ) {
         $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>' )
     }
 })
+
+socket.on('play', function(){
+    player.playVideo()
+})
+
+socket.on('pause', function(){
+    player.pauseVideo()
+})
+
+function playFunction(){
+    socket.emit('play')
+}
+
+function pauseFunction(){
+    socket.emit('pause')
+}
