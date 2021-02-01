@@ -37,11 +37,12 @@
 
     <br>
 
+    <!-- chat -->
     <div class = "chat">
         <h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
         <div class="message_holder"></div>
       
-        <form action="" method="POST">
+        <form id="chatform" action="" method="POST">
           <input type="text" class="username" placeholder="User Name"/>
           <input type="text" class="message" placeholder="Messages"/>
           <input type="submit"/>
@@ -52,17 +53,17 @@
         <script src="{{ url_for('static', filename='javascript/socketio.js') }}"></script>
     </div>
 
-    <br>
+    <!-- <br> -->
 
-    <div class="youtube">
+    <!-- <div class="youtube">
         <iframe width="1024" height="576" src="https://www.youtube.com/embed/82hnvUYY6QA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
     </div>
 
     <br>
     
-    <div id="player"></div>
+    <div id="player"></div> -->
 
-    <script>
+    <!-- <script>
       // 2. This code loads the IFrame Player API code asynchronously.
       var tag = document.createElement('script');
 
@@ -103,6 +104,6 @@
       function stopVideo() {
         player.stopVideo();
       }
-    </script>
+    </script> -->
 </div>
 {% endblock %}
