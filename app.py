@@ -3,6 +3,7 @@ from flask.globals import request
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from datetime import datetime
+import json
 
 app = Flask(__name__)
 
@@ -14,6 +15,8 @@ db = SQLAlchemy(app)
 #socketio initialization
 app.config['SECRET_KEY'] = 'vajiralongko1232#'
 socketio = SocketIO(app)
+
+currentSeconds = {'seconds': 0.0}
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -64,7 +67,7 @@ def update(id):
             db.session.commit()
             return redirect('/')
         except:
-            return 'There was an issue updating your task.'
+            return 'There was an issue updating your task.' 
     else:
         return render_template('update.html', task=task_to_update)
 
@@ -79,11 +82,13 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
 @socketio.on('play')
 def playYoutube():
     print('playing video')
-    socketio.emit('play')
+    socketio.emit('play', currentSeconds)
 
 @socketio.on('pause')
-def playYoutube():
+def pauseYoutube(json):
     print('pausing video')
+    print(json['seconds'])
+    currentSeconds['seconds'] = json['seconds']
     socketio.emit('pause')
 
 @socketio.on('connect')

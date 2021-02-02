@@ -25,7 +25,8 @@ socket.on( 'my response', function( msg ) {
     }
 })
 
-socket.on('play', function(){
+socket.on('play', function(msg){
+    player.seekTo(msg.seconds)
     player.playVideo()
 })
 
@@ -38,5 +39,5 @@ function playFunction(){
 }
 
 function pauseFunction(){
-    socket.emit('pause')
+    socket.emit('pause', {seconds:player.getCurrentTime()})
 }
