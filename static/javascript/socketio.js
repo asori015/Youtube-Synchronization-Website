@@ -15,6 +15,15 @@ socket.on( 'connect', function() {
         } )
         $( 'input.message' ).val( '' ).focus()
     } )
+
+    var form = $('#youtubeurl').on('submit', function(e){
+        e.preventDefault()
+        let url = $('input.url').val()
+        socket.emit('new url', {
+            url : url
+        })
+        $('input.url').val('').focus() //clear text field
+    })
 } )
 
 socket.on( 'my response', function( msg ) {
@@ -25,8 +34,22 @@ socket.on( 'my response', function( msg ) {
     }
 })
 
-socket.on('play', function(msg){
-    player.seekTo(msg.seconds)
+socket.on('startup', function(json) {
+    player.loadVideoById(json['url'])
+    player.seekTo(json['seconds'])
+    if(json['state'] == 'True'){
+        player.playVideo()
+    }
+})
+
+socket.on('new url', function(json) {
+    if(json['new url'] != ''){
+        player.loadVideoById(json['new url'])
+    }
+})
+
+socket.on('play', function(json){
+    player.seekTo(json['seconds'])
     player.playVideo()
 })
 
@@ -40,4 +63,8 @@ function playFunction(){
 
 function pauseFunction(){
     socket.emit('pause', {seconds:player.getCurrentTime()})
+}
+
+function onStateChange(event){
+    console.log(event.data)
 }

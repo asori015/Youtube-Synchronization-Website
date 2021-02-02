@@ -3,9 +3,10 @@ from flask.globals import request
 from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 from datetime import datetime
-import json
+import re
 
 app = Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 #sqlite initalization
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -17,6 +18,8 @@ app.config['SECRET_KEY'] = 'vajiralongko1232#'
 socketio = SocketIO(app)
 
 currentSeconds = {'seconds': 0.0}
+currentURL = 'M7lc1UVf-VE'
+currentPlayState = False
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -77,11 +80,24 @@ def messageReceived(methods=['GET', 'POST']):
 @socketio.on('my event')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     print('received my event: ' + str(json))
+    print(request.sid)
     socketio.emit('my response', json, callback=messageReceived)
+
+@socketio.on('new url')
+def setYoutubeURL(json):
+    x = re.findall(r'(http://)?(https://)?www\.youtube\.com/watch\?v=([a-zA-Z0-9_]+)(&list=)?([a-zA-z0-9_]+)?(&index=)?([0-9])?', json['url'])
+    print('got new url' + str(json))
+    print(x)
+    if len(x) > 0:
+        currentURL = x[0][2]
+        socketio.emit('new url', {"new url" : x[0][2]})
+    elif len(x) == 0:
+        socketio.emit('new url', {"new url" : ""})
 
 @socketio.on('play')
 def playYoutube():
     print('playing video')
+    currentPlayState = True
     socketio.emit('play', currentSeconds)
 
 @socketio.on('pause')
@@ -89,11 +105,23 @@ def pauseYoutube(json):
     print('pausing video')
     print(json['seconds'])
     currentSeconds['seconds'] = json['seconds']
+    currentPlayState = False
     socketio.emit('pause')
 
 @socketio.on('connect')
 def log_connect():
     print("new user connected")
+    # print(request)
+    # print(request.sid)
+    # print(request.namespace)
+    # print(request.namespace.socket)
+    # print(request.namespace.socket.sessid)
+    # socketio.
+    # socketio.emit('startup', {
+    #     'url' : currentURL,
+    #     'seconds' : str(currentSeconds['seconds']),
+    #     'state' : str(currentPlayState)
+    # }, broadcast=False)
 
 @socketio.on('disconnect')
 def log_disconnect():

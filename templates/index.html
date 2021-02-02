@@ -43,14 +43,19 @@
         <div class="message_holder"></div>
       
         <form id="chatform" action="" method="POST">
-          <input type="text" class="username" placeholder="User Name"/>
-          <input type="text" class="message" placeholder="Messages"/>
-          <input type="submit"/>
+          <input type="text" class="username" placeholder="User Name">
+          <input type="text" class="message" placeholder="Messages">
+          <input type="submit">
         </form>
 
         <br>
 
-        <!-- <iframe width="512" height="288" src="https://www.youtube.com/embed/82hnvUYY6QA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe> -->
+        <form id="youtubeurl" action="" method="POST">
+          <label>Youtube URL</label>
+          <input type="text" class="url" placeholder="Enter URL here...">
+          <input type="submit">
+        </form>
+
         <div id="player"></div>
         <script>
           var tag = document.createElement('script');
@@ -64,29 +69,9 @@
             player = new YT.Player('player', {
               height: '390',
               width: '640',
-              videoId: 'M7lc1UVf-VE',
-              // events: {
-              //   'onReady': onPlayerReady,
-              //   'onStateChange': onPlayerStateChange
-              // }
+              videoId: 'M7lc1UVf-VE'
             });
           }
-
-          // function onPlayerReady(event) {
-          //   event.target.playVideo();
-          // }
-
-          // var done = false;
-          
-          // function onPlayerStateChange(event) {
-          //   if (event.data == YT.PlayerState.PLAYING && !done) {
-          //     setTimeout(stopVideo, 6000);
-          //     done = true;
-          //   }
-          // }
-          // function stopVideo() {
-          //   player.stopVideo();
-          // }
         </script>
 
         <form id="youtube" action="" method="POST">
