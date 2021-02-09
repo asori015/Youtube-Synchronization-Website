@@ -1,3 +1,29 @@
+var tag = document.createElement('script');
+
+tag.src = "https://www.youtube.com/iframe_api";
+var firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+var player;
+var init;
+function onYouTubeIframeAPIReady() {
+    var url = 'M7lc1UVf-VE'
+    if(init !== undefined){
+        url = init['url']
+    }
+    player = new YT.Player('player', {
+        height: '390',
+        width: '640',
+        videoId: url,
+        events: {
+            'onReady': onPlayerReady
+        },
+        playerVars: {
+            autoplay: 1
+        }
+    });
+}
+
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 socket.on( 'connect', function() {
@@ -26,6 +52,20 @@ socket.on( 'connect', function() {
     })
 } )
 
+function onPlayerReady(event) {
+    // event.target.stopVideo()
+    event.target.seekTo(init['seconds'])
+    event.target.mute()
+    
+    if(init['state'] == 'True'){
+        event.target.playVideo()
+    }
+    else{
+        event.target.stopVideo()
+        // event.target.seekTo(init['seconds'])
+    }
+}
+
 socket.on( 'my response', function( msg ) {
     console.log( msg )
     if( typeof msg.user_name !== 'undefined' ) {
@@ -35,11 +75,8 @@ socket.on( 'my response', function( msg ) {
 })
 
 socket.on('startup', function(json) {
-    player.loadVideoById(json['url'])
-    player.seekTo(json['seconds'])
-    if(json['state'] == 'True'){
-        player.playVideo()
-    }
+    console.log(json)
+    init = json
 })
 
 socket.on('new url', function(json) {
@@ -65,6 +102,6 @@ function pauseFunction(){
     socket.emit('pause', {seconds:player.getCurrentTime()})
 }
 
-function onStateChange(event){
-    console.log(event.data)
+function debugFunction(){
+    socket.emit('debug')
 }
