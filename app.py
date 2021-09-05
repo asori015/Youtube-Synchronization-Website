@@ -21,7 +21,7 @@ currentSeconds = {'seconds': 0.0}
 currentURL = {'url': 'M7lc1UVf-VE'}
 currentPlayState = {'state': False}
 
-currenSIDs = {}
+currentSIDs = {}
 
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key = True)
@@ -32,6 +32,7 @@ class Todo(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.id
 
+#flask functions
 @app.route('/', methods=['POST', 'GET'])
 def index():
     print("in index")
@@ -76,15 +77,29 @@ def update(id):
     else:
         return render_template('update.html', task=task_to_update)
 
-def messageReceived(methods=['GET', 'POST']):
-    print('message was received!!!')
+#socketio functions
+@socketio.on('connect')
+def socketioConnect():
+    print("new user connected")
+    currentSIDs[request.sid] = [0,0]
+    print(currentSIDs)
+    socketio.emit('startup', {
+        'url' : currentURL['url'],
+        'seconds' : str(currentSeconds['seconds']),
+        'state' : str(currentPlayState['state'])
+    }, room=request.sid)
+
+@socketio.on('disconnect')
+def socketoiDisconnect():
+    print("user disconnected")
+    currentSIDs.pop(request.sid)
 
 @socketio.on('my event')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     print('received my event: ' + str(json))
-    socketio.emit('my response', json, callback=messageReceived)
+    socketio.emit('my response', json)
 
-@socketio.on('new url')
+@socketio.on('new_url')
 def setYoutubeURL(json):
     print('got new url' + str(json))
     urls = re.findall(r'(http://)?(https://)?www\.youtube\.com/watch\?v=([a-zA-Z0-9_-]+)(&list=)?([a-zA-z0-9_-]+)?(&index=)?([0-9])?', json['url'])
@@ -113,22 +128,6 @@ def debugServer():
     print(currentURL)
     print(currentSeconds)
     print(currentPlayState)
-
-@socketio.on('connect')
-def log_connect():
-    print("new user connected")
-    currenSIDs[request.sid] = [0,0]
-    print(currenSIDs)
-    socketio.emit('startup', {
-        'url' : currentURL['url'],
-        'seconds' : str(currentSeconds['seconds']),
-        'state' : str(currentPlayState['state'])
-    }, room=request.sid)
-
-@socketio.on('disconnect')
-def log_disconnect():
-    print("user disconnected")
-    currenSIDs.pop(request.sid)
 
 if __name__  == "__main__":
     socketio.run(app, debug=True)

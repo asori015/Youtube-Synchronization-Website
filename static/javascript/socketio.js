@@ -24,6 +24,20 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+function onPlayerReady(event) {
+    // event.target.stopVideo()
+    event.target.seekTo(init['seconds'])
+    event.target.mute()
+    
+    if(init['state'] == 'True'){
+        event.target.playVideo()
+    }
+    else{
+        event.target.stopVideo()
+        // event.target.seekTo(init['seconds'])
+    }
+}
+
 var socket = io.connect('http://' + document.domain + ':' + location.port);
 
 socket.on( 'connect', function() {
@@ -45,26 +59,12 @@ socket.on( 'connect', function() {
     var form = $('#youtubeurl').on('submit', function(e){
         e.preventDefault()
         let url = $('input.url').val()
-        socket.emit('new url', {
+        socket.emit('new_url', {
             url : url
         })
         $('input.url').val('').focus() //clear text field
     })
 } )
-
-function onPlayerReady(event) {
-    // event.target.stopVideo()
-    event.target.seekTo(init['seconds'])
-    event.target.mute()
-    
-    if(init['state'] == 'True'){
-        event.target.playVideo()
-    }
-    else{
-        event.target.stopVideo()
-        // event.target.seekTo(init['seconds'])
-    }
-}
 
 socket.on( 'my response', function( msg ) {
     console.log( msg )
@@ -79,7 +79,7 @@ socket.on('startup', function(json) {
     init = json
 })
 
-socket.on('new url', function(json) {
+socket.on('new_url', function(json) {
     if(json['new url'] != ''){
         player.loadVideoById(json['new url'])
     }
