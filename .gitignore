@@ -1,7 +1,3 @@
-*.pyc
-*.pyo
-*.db
-env/
-.vscode/
-css_example/
 __pycache__/
+not-facebook/
+*.db
