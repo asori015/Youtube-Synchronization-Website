@@ -24,7 +24,6 @@ Jinja2==2.11.2
 MarkupSafe==1.1.1
 monotonic==1.5
 numpy==1.16.6
-pafy==0.5.5
 pathlib2==2.3.5
 Pillow==6.2.2
 PyInstaller==3.6
