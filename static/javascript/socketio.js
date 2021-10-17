@@ -105,3 +105,5 @@ function pauseFunction(){
 function debugFunction(){
     socket.emit('debug')
 }
+
+console.log('test')
