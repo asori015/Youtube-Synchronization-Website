@@ -24,7 +24,7 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
-var socket = io.connect('http://' + document.domain + ':' + location.port);
+var socket = io.connect(window.location.host);
 
 socket.on( 'connect', function() {
     socket.emit( 'my event', {
