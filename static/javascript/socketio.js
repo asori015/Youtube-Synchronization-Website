@@ -19,7 +19,7 @@ function onYouTubeIframeAPIReady() {
             'onReady': onPlayerReady
         },
         playerVars: {
-            autoplay: 1
+            autoplay: 0
         }
     });
 }
@@ -55,7 +55,6 @@ socket.on( 'connect', function() {
 function onPlayerReady(event) {
     // event.target.stopVideo()
     event.target.seekTo(init['seconds'])
-    event.target.mute()
     
     if(init['state'] == 'True'){
         event.target.playVideo()
