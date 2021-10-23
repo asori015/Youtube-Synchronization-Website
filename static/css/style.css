@@ -5,3 +5,8 @@ body{
 h1{
     color: navy;
 }
+
+html, body {
+    background-color: #111;
+    text-align: center;
+}

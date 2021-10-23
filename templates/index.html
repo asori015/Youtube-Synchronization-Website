@@ -69,6 +69,17 @@
         <script src="{{ url_for('static', filename='javascript/socketio.js') }}"></script>
     </div>
 
+    <!-- <script src="jsmpeg.min.js"></script>
+    <div class="jsmpeg" data-url=window.location.host></div> -->
+
+    <canvas id="video-canvas"></canvas>
+	  <script src="{{ url_for('static', filename='javascript/jsmpeg.min.js') }}"></script>
+	  <script type="text/javascript">
+		  var canvas = document.getElementById('video-canvas');
+		  var url = 'ws://'+document.location.hostname+':8082/';
+		  var player = new JSMpeg.Player(url, {canvas: canvas});
+	  </script>
+
     <!-- <br>
     
     <div id="player"></div>

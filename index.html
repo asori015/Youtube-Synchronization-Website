@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSMpeg Stream Client</title>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv='cache-control' content='no-cache'>
+    <meta http-equiv='expires' content='0'>
+    <meta http-equiv='pragma' content='no-cache'>
+	<style type="text/css">
+		html, body {
+			background-color: #111;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="video-canvas"></canvas>
+	<!-- <script type="text/javascript" src="jsmpeg.min.js"></script> -->
+	<!-- <div class="jsmpeg" data-url="ws://127.0.0.1:8082/>"></div> -->
+	<script src="jsmpeg.min.js"></script>
+	<!-- <div class="jsmpeg full-width" data-url="ws://127.0.0.1:8082/"></div> -->
+	<div class="jsmpeg full-width" data-url="ep1.mkv"></div>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script> -->
+	<!-- <script type="text/javascript">
+		var canvas = document.getElementById('video-canvas');
+		var url = 'ws://' + document.location.hostname + ':8082/';
+
+		var player = new JSMpeg.Player(url, {canvas: canvas});
+		// var socket = io.connect(url);
+	</script> -->
+</body>
+</html>
