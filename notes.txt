@@ -1,0 +1,8 @@
+c++ compiler does operations involving different data types by converting all involved variables to the same data type, usually the data type
+capable of expressing the largest range of positive values
+Fun Tip: to find the data type of a variable you do not know, add it by a completely unrelated data type ie (t.size() + vector <int> {}) and look
+at the compiler error for the data types involved, i.e. "mismatched types: long long unsigned int and std::vector..."
+If you add u to the suffix of a number, it becomes unsigned, i.e. 10u is an unsigned 10.
+
+Compilation flag -Werror prevents signed/unsigned comparisons from happening and allowing for safer code.
+Be careful when using signed and unsigned types. When using both types in expressions, stactic cast one type for the other
