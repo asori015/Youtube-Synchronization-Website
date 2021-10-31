@@ -6,6 +6,9 @@
 
 {% block body %}
 <div class="content">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='javascript/socketio.js') }}"></script>
     <h1>Title</h1>
     {% if tasks|length < 1 %}
     <h4> There are no tasks to display. </h4>
@@ -36,37 +39,44 @@
     </form>
 
     <br>
+    
 
     <!-- chat -->
     <div class = "chat">
-        <h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
-        <div class="message_holder"></div>
-      
-        <form id="chatform" action="" method="POST">
-          <input type="text" class="username" placeholder="User Name">
-          <input type="text" class="message" placeholder="Messages">
-          <input type="submit">
-        </form>
 
-        <br>
+      <h3 style='color: #ccc;font-size: 30px;'>No message yet..</h3>
+      <div class="message_holder"></div>
+    
+      <form id="chatform" action="" method="POST">
+        <input type="text" class="username" placeholder="User Name">
+        <input type="text" class="message" placeholder="Messages">
+        <input type="submit">
+      </form>
 
-        <form id="youtubeurl" action="" method="POST">
-          <label>Youtube URL</label>
-          <input type="text" class="url" placeholder="Enter URL here...">
-          <input type="submit">
-        </form>
+      <br>
 
-        <div id="player"></div>
+      <form id="youtubeurl" action="" method="POST">
+        <label>Youtube URL</label>
+        <input type="text" class="url" placeholder="Enter URL here...">
+        <input type="submit">
+      </form>
 
-        <form id="youtube" action="" method="POST">
-          <input type="button" class="play" value="Play" onclick="playFunction()">
-          <input type="button" class="pause" value="Pause" onclick="pauseFunction()">
-          <input type="button" class="debug" value="Debug" onclick="debugFunction()">
-        </form>
+      <div id="player"></div>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.4/socket.io.min.js"></script>
-        <script src="{{ url_for('static', filename='javascript/socketio.js') }}"></script>
+      <form id="youtube" action="" method="POST">
+        <input type="button" class="play" value="Play" onclick="playFunction()">
+        <input type="button" class="pause" value="Pause" onclick="pauseFunction()">
+        <input type="button" class="debug" value="Debug" onclick="debugFunction()">
+      </form>
+    </div>
+    <div class="livestream">
+      <script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
+      <video id="videoElement"></video>
+      <form id="livestreamip" action="" method="POST">
+        <input type="text" class="ip" placeholder="Enter IP address here...">
+        <input type="button" class="submit" value="Submit" onclick="flvSumbmitFunction()">
+        <input type="button" class="playflv" value="Play" onclick="flvPlayFunction()">
+      </form>
     </div>
 
     <!-- <br>
