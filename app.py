@@ -5,24 +5,26 @@ from flask_socketio import SocketIO
 from datetime import datetime
 import re
 
+# flask initialization
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
-#sqlite initalization
+# sqlite initalization
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-#socketio initialization
+# socketio initialization
 app.config['SECRET_KEY'] = 'vajiralongko1232#'
 socketio = SocketIO(app)
 
-currentSeconds = {'seconds': 0.0}
-currentURL = {'url': 'M7lc1UVf-VE'}
-currentPlayState = {'state': False}
+# Global variables
+currentSeconds = {'seconds': 0.0}       # Current time of YT video
+currentURL = {'url': 'M7lc1UVf-VE'}     # Current url of YT video
+currentPlayState = {'state': False}     # Is YT video playing?
+currentSIDs = {}                        # socket IDs of currently connected clients
 
-currenSIDs = {}
-
+# SQL schema
 class Todo(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     content = db.Column(db.String(200), nullable = False)
@@ -32,9 +34,9 @@ class Todo(db.Model):
     def __repr__(self):
         return '<Task %r>' % self.id
 
+# index.html route
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    print("in index")
     if request.method == 'POST':
         task_content = request.form['content']
         new_task = Todo(content=task_content)
@@ -49,6 +51,7 @@ def index():
         tasks = Todo.query.order_by(Todo.date_created).all()
         return render_template('index.html', tasks=tasks)
 
+# delete task route
 @app.route('/delete/<int:id>')
 def delete(id):
     print("in delete")
@@ -61,6 +64,7 @@ def delete(id):
     except:
         return 'There was a problem deleting that task.'
 
+# update task route
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
     print("in update")
@@ -76,14 +80,28 @@ def update(id):
     else:
         return render_template('update.html', task=task_to_update)
 
-def messageReceived(methods=['GET', 'POST']):
-    print('message was received!!!')
-
+# 'chat message' event
 @socketio.on('my event')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
     print('received my event: ' + str(json))
-    socketio.emit('my response', json, callback=messageReceived)
+    socketio.emit('my response', json)
 
+# 'play YT video for all clients' event
+@socketio.on('play')
+def playYoutube():
+    print('playing video')
+    currentPlayState['state'] = True
+    socketio.emit('play', currentSeconds)
+
+# 'pause YT video for all clients' event
+@socketio.on('pause')
+def pauseYoutube(json):
+    print('pausing video')
+    currentSeconds['seconds'] = json['seconds']
+    currentPlayState['state'] = False
+    socketio.emit('pause')
+
+# 'update YT video url' event
 @socketio.on('new url')
 def setYoutubeURL(json):
     print('got new url' + str(json))
@@ -94,19 +112,7 @@ def setYoutubeURL(json):
     elif len(urls) == 0:
         socketio.emit('new url', {"new url" : ""})
 
-@socketio.on('play')
-def playYoutube():
-    print('playing video')
-    currentPlayState['state'] = True
-    socketio.emit('play', currentSeconds)
-
-@socketio.on('pause')
-def pauseYoutube(json):
-    print('pausing video')
-    currentSeconds['seconds'] = json['seconds']
-    currentPlayState['state'] = False
-    socketio.emit('pause')
-
+# 'debug' event
 @socketio.on('debug')
 def debugServer():
     print("Debug information:")
@@ -114,21 +120,24 @@ def debugServer():
     print(currentSeconds)
     print(currentPlayState)
 
+# default connection event for new clients
 @socketio.on('connect')
 def log_connect():
     print("new user connected")
-    currenSIDs[request.sid] = [0,0]
-    print(currenSIDs)
+    currentSIDs[request.sid] = [0,0]
+    print(currentSIDs)
     socketio.emit('startup', {
         'url' : currentURL['url'],
         'seconds' : str(currentSeconds['seconds']),
         'state' : str(currentPlayState['state'])
     }, room=request.sid)
 
+# default disconnection event for clients
 @socketio.on('disconnect')
 def log_disconnect():
     print("user disconnected")
-    currenSIDs.pop(request.sid)
+    currentSIDs.pop(request.sid)
 
+# start server
 if __name__  == "__main__":
     socketio.run(app, debug=True)

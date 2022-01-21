@@ -78,6 +78,7 @@ socket.on('startup', function(json) {
     init = json
 })
 
+//
 socket.on('new url', function(json) {
     if(json['new url'] != ''){
         player.loadVideoById(json['new url'])
@@ -110,7 +111,7 @@ function flvPlayFunction(){
         var videoElement = document.getElementById('videoElement');
         var flvPlayer = flvjs.createPlayer({
             type: 'flv',
-            url: 'http://localhost:8000/live/STREAM_NAME.flv'
+            url: 'http://localhost:5000/live/MYSTREAM.flv'
         });
         flvPlayer.attachMediaElement(videoElement);
         flvPlayer.load();
@@ -119,5 +120,5 @@ function flvPlayFunction(){
 }
 
 function flvSumbmitFunction(){
-    ;
+    socket.emit('stream-url', {url:1})
 }
