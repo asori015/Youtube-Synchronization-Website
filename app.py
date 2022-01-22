@@ -105,7 +105,7 @@ def pauseYoutube(json):
 @socketio.on('new url')
 def setYoutubeURL(json):
     print('got new url' + str(json))
-    urls = re.findall(r'(http://)?(https://)?www\.youtube\.com/watch\?v=([a-zA-Z0-9_-]+)(&list=)?([a-zA-z0-9_-]+)?(&index=)?([0-9])?', json['url'])
+    urls = re.findall(r'(http:\/\/|https:\/\/)?(www\.)?youtu(be\.com\/watch\?v=|\.be\/|be\.com\/embed\/)([a-zA-Z0-9_-]+)(&list=)?([a-zA-z0-9_-]+)?(&index=)?([0-9])?', json['url'])
     if len(urls) > 0:
         currentURL['url'] = urls[0][2]
         socketio.emit('new url', {"new url" : urls[0][2]})
