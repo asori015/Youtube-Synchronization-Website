@@ -52,7 +52,7 @@ socket.on( 'connect', function() {
         socket.emit('new url', {
             url : url
         })
-        $('input.url').val('').focus() //clear text field
+        $('input.url').val('').focus() // clear text field
     })
 
     var form = $('#livestreamip').on('submit', function(e){
@@ -61,7 +61,7 @@ socket.on( 'connect', function() {
         socket.emit('new ip', {
             ip : ip
         })
-        $('input.ip').val('').focus() //clear text field
+        $('input.ip').val('').focus() // clear text field
     })
 } )
 
@@ -95,6 +95,12 @@ socket.on('startup', function(json) {
 socket.on('new url', function(json) {
     if(json['new url'] != ''){
         player.loadVideoById(json['new url'])
+    }
+})
+
+socket.on('new ip', function(json) {
+    if(json['new ip'] != ''){
+        console.log(json['new ip'])
     }
 })
 

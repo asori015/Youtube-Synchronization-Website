@@ -21,6 +21,7 @@ socketio = SocketIO(app)
 # Global variables
 currentSeconds = {'seconds': 0.0}       # Current time of YT video
 currentURL = {'url': 'M7lc1UVf-VE'}     # Current url of YT video
+currentIP = {'ip': '0.0.0.0'}           # Current IP address of livestream
 currentPlayState = {'state': False}     # Is YT video playing?
 currentSIDs = {}                        # socket IDs of currently connected clients
 
@@ -54,7 +55,7 @@ def index():
 # delete task route
 @app.route('/delete/<int:id>')
 def delete(id):
-    print("in delete")
+    print("in delete") # debug
     task_to_delete = Todo.query.get_or_404(id)
 
     try:
@@ -67,7 +68,7 @@ def delete(id):
 # update task route
 @app.route('/update/<int:id>', methods=['GET', 'POST'])
 def update(id):
-    print("in update")
+    print("in update") # debug
     task_to_update = Todo.query.get_or_404(id)
 
     if request.method == 'POST':
@@ -83,20 +84,20 @@ def update(id):
 # 'chat message' event
 @socketio.on('my event')
 def handle_my_custom_event(json, methods=['GET', 'POST']):
-    print('received my event: ' + str(json))
+    print('received my event: ' + str(json)) # debug
     socketio.emit('my response', json)
 
 # 'play YT video for all clients' event
 @socketio.on('play')
 def playYoutube():
-    print('playing video')
+    print('playing video') # debug
     currentPlayState['state'] = True
     socketio.emit('play', currentSeconds)
 
 # 'pause YT video for all clients' event
 @socketio.on('pause')
 def pauseYoutube(json):
-    print('pausing video')
+    print('pausing video') # debug
     currentSeconds['seconds'] = json['seconds']
     currentPlayState['state'] = False
     socketio.emit('pause')
@@ -104,18 +105,24 @@ def pauseYoutube(json):
 # 'update YT video url' event
 @socketio.on('new url')
 def setYoutubeURL(json):
-    print('got new url' + str(json))
+    print('got new url' + str(json)) # debug
     urls = re.findall(r'(http:\/\/|https:\/\/)?(www\.)?youtu(be\.com\/watch\?v=|\.be\/|be\.com\/embed\/)([a-zA-Z0-9_-]+)(&list=)?([a-zA-z0-9_-]+)?(&index=)?([0-9])?', json['url'])
     if len(urls) > 0:
-        currentURL['url'] = urls[0][2]
-        socketio.emit('new url', {"new url" : urls[0][2]})
+        currentURL['url'] = urls[0][3]
+        socketio.emit('new url', {"new url" : urls[0][3]})
     elif len(urls) == 0:
         socketio.emit('new url', {"new url" : ""})
 
 # 'update livestream IP address' event
 @socketio.on('new ip')
 def setLivestreamIP(json):
-    print('got new ip' + str(json))
+    print('got new ip' + str(json)) # debug
+    ip = re.findall(r'[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}\.[\d]{1,3}', json['ip'])
+    if len(ip) > 0:
+        currentIP['ip'] = ip[0]
+        socketio.emit('new ip', {"new ip" : ip[0]})
+    elif len(ip) == 0:
+        socketio.emit('new ip', {"new ip" : ""})
 
 # 'debug' event
 @socketio.on('debug')
@@ -128,9 +135,9 @@ def debugServer():
 # default connection event for new clients
 @socketio.on('connect')
 def log_connect():
-    print("new user connected")
+    print("new user connected")  # debug
     currentSIDs[request.sid] = [0,0]
-    print(currentSIDs)
+    print(currentSIDs)  # debug
     socketio.emit('startup', {
         'url' : currentURL['url'],
         'seconds' : str(currentSeconds['seconds']),
@@ -140,7 +147,7 @@ def log_connect():
 # default disconnection event for clients
 @socketio.on('disconnect')
 def log_disconnect():
-    print("user disconnected")
+    print("user disconnected")  # debug
     currentSIDs.pop(request.sid)
 
 # start server
