@@ -1,3 +1,4 @@
+// Youtube API initialization
 var tag = document.createElement('script');
 
 tag.src = "https://www.youtube.com/iframe_api";
@@ -24,14 +25,17 @@ function onYouTubeIframeAPIReady() {
     });
 }
 
+// Websocket initialization
 var socket = io.connect(window.location.host);
 
+// Socket connection event
 socket.on( 'connect', function() {
     socket.emit( 'my event', {
         data: 'User Connected'
     } )
-    // using j query
-    var form = $( '#chatform' ).on( 'submit', function( e ) {
+
+    // Setting up jquery forms
+    var form = $('#chatform').on('submit', function(e) {
         e.preventDefault()
         let user_name = $( 'input.username' ).val()
         let user_input = $( 'input.message' ).val()
@@ -49,6 +53,15 @@ socket.on( 'connect', function() {
             url : url
         })
         $('input.url').val('').focus() //clear text field
+    })
+
+    var form = $('#livestreamip').on('submit', function(e){
+        e.preventDefault()
+        let ip = $('input.ip').val()
+        socket.emit('new ip', {
+            ip : ip
+        })
+        $('input.ip').val('').focus() //clear text field
     })
 } )
 
@@ -119,6 +132,6 @@ function flvPlayFunction(){
     }
 }
 
-function flvSumbmitFunction(){
-    socket.emit('stream-url', {url:1})
-}
+// function flvSumbmitFunction(){
+//     socket.emit('stream-url', {url:1})
+// }

@@ -112,6 +112,11 @@ def setYoutubeURL(json):
     elif len(urls) == 0:
         socketio.emit('new url', {"new url" : ""})
 
+# 'update livestream IP address' event
+@socketio.on('new ip')
+def setLivestreamIP(json):
+    print('got new ip' + str(json))
+
 # 'debug' event
 @socketio.on('debug')
 def debugServer():
