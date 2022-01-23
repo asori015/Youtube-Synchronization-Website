@@ -5,6 +5,8 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+ip = ""
+
 var player;
 var init;
 function onYouTubeIframeAPIReady() {
@@ -78,16 +80,16 @@ function onPlayerReady(event) {
     }
 }
 
-socket.on( 'my response', function( msg ) {
-    console.log( msg )
-    if( typeof msg.user_name !== 'undefined' ) {
-        $( 'h3' ).remove()
-        $( 'div.message_holder' ).append( '<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>' )
+socket.on('my response', function(msg){
+    console.log(msg) // debug
+    if(typeof msg.user_name !== 'undefined'){
+        $('h3').remove()
+        $('div.message_holder').append('<div><b style="color: #000">'+msg.user_name+'</b> '+msg.message+'</div>')
     }
 })
 
 socket.on('startup', function(json) {
-    console.log(json)
+    console.log(json) // debug
     init = json
 })
 
@@ -100,7 +102,7 @@ socket.on('new url', function(json) {
 
 socket.on('new ip', function(json) {
     if(json['new ip'] != ''){
-        console.log(json['new ip'])
+        console.log(json['new ip']) // debug
     }
 })
 
@@ -127,17 +129,15 @@ function debugFunction(){
 
 function flvPlayFunction(){
     if (flvjs.isSupported()) {
+        console.log('flvjs supported') // debug
         var videoElement = document.getElementById('videoElement');
         var flvPlayer = flvjs.createPlayer({
             type: 'flv',
-            url: 'http://localhost:5000/live/MYSTREAM.flv'
+            url: ip
+            //url: 'http://localhost:5000/live/MYSTREAM.flv'
         });
         flvPlayer.attachMediaElement(videoElement);
         flvPlayer.load();
         flvPlayer.play();
     }
 }
-
-// function flvSumbmitFunction(){
-//     socket.emit('stream-url', {url:1})
-// }
