@@ -59,10 +59,10 @@ socket.on( 'connect', function() {
 
     var form = $('#livestreamip').on('submit', function(e){
         e.preventDefault()
-        let ip = $('input.ip').val()
-        socket.emit('new ip', {
-            ip : ip
-        })
+        ip = $('input.ip').val()
+        // socket.emit('new ip', {
+        //     ip : ip
+        // })
         $('input.ip').val('').focus() // clear text field
     })
 } )
