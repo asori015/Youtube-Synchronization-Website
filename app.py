@@ -19,7 +19,8 @@ app.config['SECRET_KEY'] = 'vajiralongko1232#'
 socketio = SocketIO(app)
 
 # Global variables
-currentSeconds = {'seconds': 0.0}       # Current time of YT video
+currentSeconds = {'seconds': 0.0}       # Current time in seconds of YT video
+currentTimestamp = {'timestamp': 0}     # Current timestamp of most recent 'play' event emitted
 currentURL = {'url': 'M7lc1UVf-VE'}     # Current url of YT video
 currentIP = {'ip': '0.0.0.0'}           # Current IP address of livestream
 currentPlayState = {'state': False}     # Is YT video playing?
@@ -89,10 +90,11 @@ def handle_my_custom_event(json, methods=['GET', 'POST']):
 
 # 'play YT video for all clients' event
 @socketio.on('play')
-def playYoutube():
+def playYoutube(json):
     print('playing video') # debug
+    currentTimestamp['timestamp'] = json['timestamp']
     currentPlayState['state'] = True
-    socketio.emit('play', currentSeconds)
+    socketio.emit('play', {**currentSeconds, **currentTimestamp})
 
 # 'pause YT video for all clients' event
 @socketio.on('pause')
