@@ -104,6 +104,11 @@ def pauseYoutube(json):
     currentPlayState['state'] = False
     socketio.emit('pause')
 
+@socketio.on('sync')
+def syncYoutube():
+    print('syncing clients') # debug
+    socketio.emit('sync')
+
 # 'update YT video url' event
 @socketio.on('new url')
 def setYoutubeURL(json):

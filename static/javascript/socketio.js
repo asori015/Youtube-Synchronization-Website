@@ -7,6 +7,7 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 let ip = ""
 let timestamp = 0
+let seconds = 0
 
 var player;
 var init;
@@ -50,6 +51,10 @@ function playFunction(){
 
 function pauseFunction(){
     socket.emit('pause', {seconds:player.getCurrentTime()})
+}
+
+function syncFunction(){
+    socket.emit('sync')
 }
 
 function debugFunction(){
@@ -140,7 +145,8 @@ socket.on('new ip', function(json) {
 
 socket.on('play', function(json){
     timestamp = json['timestamp']
-    player.seekTo(json['seconds'] + ((Date.now() - timestamp) / 1000))
+    seconds = json['seconds']
+    player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
     player.playVideo()
 })
 
@@ -148,8 +154,15 @@ socket.on('pause', function(){
     player.pauseVideo()
 })
 
+socket.on('sync', function(){
+    player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
+})
+
 // debug fps counter
 setInterval(function(){
     let fps = document.getElementById('fps')
     fps.innerHTML = 'FPS: ' + ((Date.now() - timestamp) / 1000) + ' Baseline: ' + timestamp + ' Current: ' + Date.now()
-}, 1000);
+    // if(player.getPlayerState() === 1){
+    //     player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
+    // }
+}, 5000);
