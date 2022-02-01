@@ -147,3 +147,9 @@ socket.on('play', function(json){
 socket.on('pause', function(){
     player.pauseVideo()
 })
+
+// debug fps counter
+setInterval(function(){
+    let fps = document.getElementById('fps')
+    fps.innerHTML = 'FPS: ' + ((Date.now() - timestamp) / 1000) + ' Baseline: ' + timestamp + ' Current: ' + Date.now()
+}, 1000);
