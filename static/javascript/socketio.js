@@ -133,7 +133,7 @@ socket.on('new url', function(json) {
     if(json['new url'] != ''){
         player.loadVideoById(json['new url'])
         player.seekTo(0)
-        player.pauseVideo()
+        // player.pauseVideo()
     }
 })
 
