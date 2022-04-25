@@ -133,7 +133,6 @@ socket.on('new url', function(json) {
     if(json['new url'] != ''){
         player.loadVideoById(json['new url'])
         player.seekTo(0)
-        // player.pauseVideo()
     }
 })
 
@@ -165,4 +164,4 @@ setInterval(function(){
     // if(player.getPlayerState() === 1){
     //     player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
     // }
-}, 200);
+}, 250);
