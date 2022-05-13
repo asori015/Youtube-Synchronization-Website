@@ -158,10 +158,10 @@ socket.on('sync', function(){
 })
 
 // debug fps counter
-setInterval(function(){
-    let fps = document.getElementById('fps')
-    fps.innerHTML = 'FPS: ' + ((Date.now() - timestamp) / 1000) + ' Baseline: ' + timestamp + ' Current: ' + Date.now() + ' Diff: ' + (player.getCurrentTime() - ((Date.now() - timestamp) / 1000))
-    // if(player.getPlayerState() === 1){
-    //     player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
-    // }
-}, 250);
+// setInterval(function(){
+//     let fps = document.getElementById('fps')
+//     fps.innerHTML = 'FPS: ' + ((Date.now() - timestamp) / 1000) + ' Baseline: ' + timestamp + ' Current: ' + Date.now() + ' Diff: ' + (player.getCurrentTime() - ((Date.now() - timestamp) / 1000))
+//     // if(player.getPlayerState() === 1){
+//     //     player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
+//     // }
+// }, 250);
