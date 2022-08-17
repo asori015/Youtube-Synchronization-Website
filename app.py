@@ -5,6 +5,13 @@ from flask_socketio import SocketIO
 from datetime import datetime
 import re
 
+# import os
+# import psycopg2
+
+# DATABASE_URL = os.environ['DATABASE_URL']
+
+# conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+
 # flask initialization
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
