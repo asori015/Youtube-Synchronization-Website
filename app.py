@@ -12,7 +12,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # postgresql initalization
 #DATABASE_URL = #os.environ['DATABASE_URL']
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///notfacebook_dev"#os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql:///postgresql-curved-44897"#os.environ['DATABASE_URL']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 from models import TodoItem
