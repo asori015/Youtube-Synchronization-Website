@@ -11,10 +11,9 @@ app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # postgresql initalization
-#DATABASE_URL = #os.environ['DATABASE_URL']
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+DATABASE_URL = os.environ['DATABASE_URL']
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql' + DATABASE_URL[8:]
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-print(os.environ['DATABASE_URL'])
 db = SQLAlchemy(app)
 from models import TodoItem
 
