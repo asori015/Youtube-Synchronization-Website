@@ -5,7 +5,9 @@ tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-ip = ""
+let ip = ""
+let timestamp = 0
+let seconds = 0
 
 var player;
 var init;
@@ -29,6 +31,50 @@ function onYouTubeIframeAPIReady() {
 
 // Websocket initialization
 var socket = io.connect(window.location.host);
+
+function onPlayerReady(event) {
+    // event.target.stopVideo()
+    event.target.seekTo(init['seconds'])
+    
+    if(init['state'] == 'True'){
+        event.target.playVideo()
+    }
+    else{
+        event.target.stopVideo()
+        // event.target.seekTo(init['seconds'])
+    }
+}
+
+function playFunction(){
+    socket.emit('play', {timestamp:Date.now()})
+}
+
+function pauseFunction(){
+    socket.emit('pause', {seconds:player.getCurrentTime()})
+}
+
+function syncFunction(){
+    socket.emit('sync')
+}
+
+function debugFunction(){
+    socket.emit('debug')
+}
+
+function flvPlayFunction(){
+    if (flvjs.isSupported()) {
+        console.log('flvjs supported') // debug
+        var videoElement = document.getElementById('videoElement');
+        var flvPlayer = flvjs.createPlayer({
+            type: 'flv',
+            url: ip
+            //url: 'http://localhost:5000/live/MYSTREAM.flv'
+        });
+        flvPlayer.attachMediaElement(videoElement);
+        flvPlayer.load();
+        flvPlayer.play();
+    }
+}
 
 // Socket connection event
 socket.on( 'connect', function() {
@@ -60,25 +106,14 @@ socket.on( 'connect', function() {
     var form = $('#livestreamip').on('submit', function(e){
         e.preventDefault()
         ip = $('input.ip').val()
-        // socket.emit('new ip', {
-        //     ip : ip
-        // })
+        socket.emit('new ip', {
+            ip : ip
+        })
         $('input.ip').val('').focus() // clear text field
     })
 } )
 
-function onPlayerReady(event) {
-    // event.target.stopVideo()
-    event.target.seekTo(init['seconds'])
-    
-    if(init['state'] == 'True'){
-        event.target.playVideo()
-    }
-    else{
-        event.target.stopVideo()
-        // event.target.seekTo(init['seconds'])
-    }
-}
+// These events are server-wide responses to individual client requests
 
 socket.on('my response', function(msg){
     console.log(msg) // debug
@@ -97,6 +132,7 @@ socket.on('startup', function(json) {
 socket.on('new url', function(json) {
     if(json['new url'] != ''){
         player.loadVideoById(json['new url'])
+        player.seekTo(0)
     }
 })
 
@@ -107,7 +143,9 @@ socket.on('new ip', function(json) {
 })
 
 socket.on('play', function(json){
-    player.seekTo(json['seconds'])
+    timestamp = json['timestamp']
+    seconds = json['seconds']
+    player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
     player.playVideo()
 })
 
@@ -115,29 +153,15 @@ socket.on('pause', function(){
     player.pauseVideo()
 })
 
-function playFunction(){
-    socket.emit('play')
-}
+socket.on('sync', function(){
+    player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
+})
 
-function pauseFunction(){
-    socket.emit('pause', {seconds:player.getCurrentTime()})
-}
-
-function debugFunction(){
-    socket.emit('debug')
-}
-
-function flvPlayFunction(){
-    if (flvjs.isSupported()) {
-        console.log('flvjs supported') // debug
-        var videoElement = document.getElementById('videoElement');
-        var flvPlayer = flvjs.createPlayer({
-            type: 'flv',
-            url: ip
-            //url: 'http://localhost:5000/live/MYSTREAM.flv'
-        });
-        flvPlayer.attachMediaElement(videoElement);
-        flvPlayer.load();
-        flvPlayer.play();
-    }
-}
+// debug fps counter
+// setInterval(function(){
+//     let fps = document.getElementById('fps')
+//     fps.innerHTML = 'FPS: ' + ((Date.now() - timestamp) / 1000) + ' Baseline: ' + timestamp + ' Current: ' + Date.now() + ' Diff: ' + (player.getCurrentTime() - ((Date.now() - timestamp) / 1000))
+//     // if(player.getPlayerState() === 1){
+//     //     player.seekTo(seconds + ((Date.now() - timestamp) / 1000))
+//     // }
+// }, 250);
