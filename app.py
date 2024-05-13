@@ -1,24 +1,26 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask.globals import request
-from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO
 
 import os
 import re
+import psycopg2
+import psycopg2.extras
 
 # flask initialization
 app = Flask(__name__)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # postgresql initalization
-DATABASE_URL = os.environ['DATABASE_URL']
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql' + DATABASE_URL[8:]
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-from models import TodoItem
+def get_db_connection():
+    conn = psycopg2.connect(host=os.environ['DB_URL'],
+                            database=os.environ['DB_NAME'],
+                            user=os.environ['DB_USERNAME'],
+                            password=os.environ['DB_PASSWORD'])
+    return conn
 
 # socketio initialization
-app.config['SECRET_KEY'] = 'vajiralongko1232#'
+app.config['SECRET_KEY'] = os.environ['APP_SECRETKEY']
 socketio = SocketIO(app)
 
 # Global variables
@@ -43,7 +45,13 @@ def index():
         except:
             return 'There was an issue adding your task'
     else:
-        tasks = TodoItem.query.order_by(TodoItem.date_created).all()
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * from public.\"todoItems\" ORDER BY \"date_created\";")
+        tasks = cur.fetchall()
+        cur.close()
+        conn.close()
+
         return render_template('index.html', tasks=tasks)
 
 # delete task route
@@ -152,5 +160,5 @@ def log_disconnect():
 
 # start server
 if __name__  == "__main__":
-    db.create_all()
+    # db.create_all()
     socketio.run(app, debug=True)
