@@ -13,10 +13,7 @@ app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # postgresql initalization
 def get_db_connection():
-    conn = psycopg2.connect(host=os.environ['DB_URL'],
-                            database=os.environ['DB_NAME'],
-                            user=os.environ['DB_USERNAME'],
-                            password=os.environ['DB_PASSWORD'])
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
     return conn
 
 # socketio initialization
