@@ -1,11 +1,13 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask.globals import request
 from flask_socketio import SocketIO
+from flask_api import status
 
 import os
 import re
 import psycopg2
 import psycopg2.extras
+# import json
 
 # flask initialization
 app = Flask(__name__)
@@ -79,6 +81,22 @@ def update(id):
             return 'There was an issue updating your task.' 
     else:
         return render_template('update.html', task=task_to_update)
+
+# api endpoint for getting user saved playlists
+@app.route('/api/get', methods=['GET', 'POST'])
+def get_yt_data():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
+        cur.execute("SELECT * from public.\"todoItems\" ORDER BY \"date_created\";")
+        tasks = cur.fetchall()
+        cur.close()
+        conn.close()
+        return tasks
+        # return json.dumps(tasks), status.HTTP_200_OK
+    except Exception as e: 
+        print(e)
+        return "Record not found", status.HTTP_400_BAD_REQUEST
 
 # 'chat message' event
 @socketio.on('my event')
