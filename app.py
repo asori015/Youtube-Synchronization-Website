@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, request, redirect
 from flask.globals import request
 from flask_socketio import SocketIO
 from flask_api import status
+from flask_cors import CORS
 
 import os
 import re
@@ -11,7 +12,8 @@ import psycopg2.extras
 
 # flask initialization
 app = Flask(__name__)
-app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+CORS(app, resources={r"/api/data": {"origins": "*"}})
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0 # Temporary line for debugging
 
 # postgresql initalization
 def get_db_connection():
@@ -83,7 +85,7 @@ def update(id):
         return render_template('update.html', task=task_to_update)
 
 # api endpoint for getting user saved playlists
-@app.route('/api/get', methods=['GET', 'POST'])
+@app.route('/api/data', methods=['GET'])
 def get_yt_data():
     try:
         conn = get_db_connection()
